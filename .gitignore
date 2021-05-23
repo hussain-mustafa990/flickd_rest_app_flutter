@@ -3,6 +3,8 @@
 *.log
 *.pyc
 *.swp
+/ios/
+/android/
 .DS_Store
 .atom/
 .buildlog/
