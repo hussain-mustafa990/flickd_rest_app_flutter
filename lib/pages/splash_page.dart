@@ -16,8 +16,8 @@ class SplashPage extends StatefulWidget {
   final VoidCallback onInitializationComplete;
 
   const SplashPage({
-    Key key,
-    @required this.onInitializationComplete,
+    Key? key,
+    required this.onInitializationComplete,
   }) : super(key: key);
 
   @override

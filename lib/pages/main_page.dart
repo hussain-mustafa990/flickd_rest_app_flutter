@@ -16,38 +16,38 @@ import '../models/movie.dart';
 import '../controllers/main_page_data_controller.dart';
 
 final mainPageDataControllerProvider =
-    StateNotifierProvider<MainPageDataController>((ref) {
+    StateNotifierProvider<MainPageDataController, MainPageData>((ref) {
   return MainPageDataController();
 });
 
-final selectedMoviePosterURLProvider = StateProvider<String>((ref) {
-  final _movies = ref.watch(mainPageDataControllerProvider.state).movies;
+final selectedMoviePosterURLProvider = StateProvider<String?>((ref) {
+  final _movies = ref.watch(mainPageDataControllerProvider).movies!;
   return _movies.length != 0 ? _movies[0].posterURL() : null;
 });
 
 class MainPage extends ConsumerWidget {
-  double _deviceHeight;
-  double _deviceWidth;
+  double? _deviceHeight;
+  double? _deviceWidth;
 
-  var _selectedMoviePosterURL;
+  late var _selectedMoviePosterURL;
 
-  MainPageDataController _mainPageDataController;
-  MainPageData _mainPageData;
+  late MainPageDataController _mainPageDataController;
+  late MainPageData _mainPageData;
 
-  TextEditingController _searchTextFieldController;
+  TextEditingController? _searchTextFieldController;
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
 
-    _mainPageDataController = watch(mainPageDataControllerProvider);
-    _mainPageData = watch(mainPageDataControllerProvider.state);
+    _mainPageDataController = watch(mainPageDataControllerProvider.notifier);
+    _mainPageData = watch(mainPageDataControllerProvider);
     _selectedMoviePosterURL = watch(selectedMoviePosterURLProvider);
 
     _searchTextFieldController = TextEditingController();
 
-    _searchTextFieldController.text = _mainPageData.searchText;
+    _searchTextFieldController!.text = _mainPageData.searchText!;
 
     return _buildUI();
   }
@@ -102,8 +102,8 @@ class MainPage extends ConsumerWidget {
 
   Widget _foregroundWidgets() {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, _deviceHeight * 0.02, 0, 0),
-      width: _deviceWidth * 0.88,
+      padding: EdgeInsets.fromLTRB(0, _deviceHeight! * 0.02, 0, 0),
+      width: _deviceWidth! * 0.88,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -111,8 +111,8 @@ class MainPage extends ConsumerWidget {
         children: [
           _topBarWidget(),
           Container(
-            height: _deviceHeight * 0.83,
-            padding: EdgeInsets.symmetric(vertical: _deviceHeight * 0.01),
+            height: _deviceHeight! * 0.83,
+            padding: EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
             child: _moviesListViewWidget(),
           )
         ],
@@ -122,7 +122,7 @@ class MainPage extends ConsumerWidget {
 
   Widget _topBarWidget() {
     return Container(
-      height: _deviceHeight * 0.08,
+      height: _deviceHeight! * 0.08,
       decoration: BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.circular(20.0),
@@ -142,8 +142,8 @@ class MainPage extends ConsumerWidget {
   Widget _searchFieldWidget() {
     final _border = InputBorder.none;
     return Container(
-      width: _deviceWidth * 0.50,
-      height: _deviceHeight * 0.05,
+      width: _deviceWidth! * 0.50,
+      height: _deviceHeight! * 0.05,
       child: TextField(
         controller: _searchTextFieldController,
         onSubmitted: (_input) =>
@@ -173,7 +173,7 @@ class MainPage extends ConsumerWidget {
         height: 1,
         color: Colors.white24,
       ),
-      onChanged: (_value) => _value.toString().isNotEmpty
+      onChanged: (dynamic _value) => _value.toString().isNotEmpty
           ? _mainPageDataController.updateSearchCategory(_value)
           : null,
       items: [
@@ -203,11 +203,11 @@ class MainPage extends ConsumerWidget {
   }
 
   Widget _moviesListViewWidget() {
-    final List<Movie> _movies = _mainPageData.movies;
+    final List<Movie> _movies = _mainPageData.movies!;
 
     if (_movies.length != 0) {
       return NotificationListener(
-        onNotification: (_onScrollNotification) {
+        onNotification: (dynamic _onScrollNotification) {
           if (_onScrollNotification is ScrollEndNotification) {
             final before = _onScrollNotification.metrics.extentBefore;
             final max = _onScrollNotification.metrics.maxScrollExtent;
@@ -224,15 +224,15 @@ class MainPage extends ConsumerWidget {
           itemBuilder: (BuildContext _context, int _count) {
             return Padding(
               padding: EdgeInsets.symmetric(
-                  vertical: _deviceHeight * 0.01, horizontal: 0),
+                  vertical: _deviceHeight! * 0.01, horizontal: 0),
               child: GestureDetector(
                 onTap: () {
                   _selectedMoviePosterURL.state = _movies[_count].posterURL();
                 },
                 child: MovieTile(
                   movie: _movies[_count],
-                  height: _deviceHeight * 0.20,
-                  width: _deviceWidth * 0.85,
+                  height: _deviceHeight! * 0.20,
+                  width: _deviceWidth! * 0.85,
                 ),
               ),
             );

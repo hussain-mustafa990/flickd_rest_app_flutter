@@ -8,8 +8,8 @@ class HTTPService {
   final Dio dio = Dio();
   final GetIt getIt = GetIt.instance;
 
-  String _base_url;
-  String _api_key;
+  String? _base_url;
+  String? _api_key;
 
   HTTPService() {
     AppConfig _config = getIt.get<AppConfig>();
@@ -17,7 +17,7 @@ class HTTPService {
     _api_key = _config.API_KEY;
   }
 
-  Future<Response> get(String _path, {Map<String, dynamic> query}) async {
+  Future<Response?> get(String _path, {Map<String, dynamic>? query}) async {
     try {
       String _url = '$_base_url$_path';
       Map<String, dynamic> _query = {
