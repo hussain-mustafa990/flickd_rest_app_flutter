@@ -37,13 +37,13 @@ class MainPage extends ConsumerWidget {
   TextEditingController? _searchTextFieldController;
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
+  Widget build(BuildContext context, WidgetRef ref) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
 
-    _mainPageDataController = watch(mainPageDataControllerProvider.notifier);
-    _mainPageData = watch(mainPageDataControllerProvider);
-    _selectedMoviePosterURL = watch(selectedMoviePosterURLProvider);
+    _mainPageDataController = ref.watch(mainPageDataControllerProvider.notifier);
+    _mainPageData = ref.watch(mainPageDataControllerProvider);
+    _selectedMoviePosterURL = ref.watch(selectedMoviePosterURLProvider);
 
     _searchTextFieldController = TextEditingController();
 
@@ -71,14 +71,14 @@ class MainPage extends ConsumerWidget {
   }
 
   Widget _backgroundWidget() {
-    if (_selectedMoviePosterURL.state != null) {
+    if (_selectedMoviePosterURL != null) {
       return Container(
         height: _deviceHeight,
         width: _deviceWidth,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           image: DecorationImage(
-            image: NetworkImage(_selectedMoviePosterURL.state),
+            image: NetworkImage(_selectedMoviePosterURL),
             fit: BoxFit.cover,
           ),
         ),
@@ -103,7 +103,7 @@ class MainPage extends ConsumerWidget {
   Widget _foregroundWidgets() {
     return Container(
       padding: EdgeInsets.fromLTRB(0, _deviceHeight! * 0.02, 0, 0),
-      width: _deviceWidth! * 0.88,
+      width: _deviceWidth! * 0.90,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
